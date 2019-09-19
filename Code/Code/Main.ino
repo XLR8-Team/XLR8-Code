@@ -166,17 +166,6 @@ float kdVelocidad = 10;
 float ultimoErrorVelocidad = 0;
 int correccion = 0;
 
-////////////////////////////
-// VARIABLES DE ENCODERS  //
-////////////////////////////
-//#define ENCODER_PPR 119
-//#define RUEDAS_RADIO 0.01275
-//float ticksMm = 1.444f;
-//long ticksDerechoAnteriores = 0;
-//long ticksIzquierdoAnteriores = 0;
-//volatile long ticksDerecho = 0;
-//volatile long ticksIzquierdo = 0;
-
 ///////////////////////////
 // VARIABLES DE SENSORES //
 ///////////////////////////
@@ -213,36 +202,6 @@ int valorCalibradoMinimo;
 ///////////////////////////////
 bool competicionIniciada = false;
 
-/////////////////////////////////////////
-// VARIABLES DE MENÚ DE CONFIGURACIÓN  //
-/////////////////////////////////////////
-/*#define NUMERO_COMBINACIONES 10
-#define CRUCETA_ARRIBA 1460
-#define CRUCETA_ABAJO 475
-#define CRUCETA_DERECHA 860
-#define CRUCETA_IZQUIERDA 2040
-#define CRUCETA_ARRIBA_ABAJO 1670
-#define CRUCETA_DERECHA_IZQUIERDA 2280
-#define CRUCETA_ARRIBA_DERECHA 1840
-#define CRUCETA_DERECHA_ABAJO 1160
-#define CRUCETA_ABAJO_IZQUIERDA 2170
-#define CRUCETA_IZQUIERDA_ARRIBA 2490
-int crucetaCombinaciones[] = {CRUCETA_ARRIBA,
-                              CRUCETA_ABAJO,
-                              CRUCETA_DERECHA,
-                              CRUCETA_IZQUIERDA,
-                              CRUCETA_ARRIBA_ABAJO,
-                              CRUCETA_DERECHA_IZQUIERDA,
-                              CRUCETA_ARRIBA_DERECHA,
-                              CRUCETA_DERECHA_ABAJO,
-                              CRUCETA_ABAJO_IZQUIERDA,
-                              CRUCETA_IZQUIERDA_ARRIBA};
-#define NUMERO_VELOCIDADES 9
-int velocidad_menu = 0;
-#define NUMERO_VELOCIDADES_SUCCION 9
-int velocidad_succion_menu = 0;
-*/
-
 
 // TIMER
 int periodo = 1; // milisegundos de periodo del timer
@@ -264,14 +223,13 @@ int estado = INICIALIZADO;
 HardwareTimer TimerPID(2); //Que timer se usa el 2
 bool timerPID_pause = false;
 HardwareTimer TimerBrushless(3);//Que timer se usa el 3
-PIDfromBT CalibracionPID(&kp, &ki, &kd, &velocidad, &posicionIdeal, &velocidadSuccion, DEBUG);
+//PIDfromBT CalibracionPID(&kp, &ki, &kd, &velocidad, &posicionIdeal, &velocidadSuccion, DEBUG);
 //ExponentialFilter<long> filtroBateria(15, 0);
 
 
 void setup() {
   inicia_todo();
-  inicia_timer_Brushless();
-  //nivel_bateria(false);
+  inicia_timer_Brushless();  
   calibra_sensores();
   delay(100);
 }

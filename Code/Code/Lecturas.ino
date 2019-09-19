@@ -3,43 +3,13 @@
  * @param  canalMux Canal del Multiplexador correspondiente al sensor que se desea leer.
  * @return [int]    Lectura analógica del sensor indicado.
  */
- /*
-<<<<<<< HEAD
-int mux_analog_read(byte canalMux) {
-
-  
-=======
-int mux_analog_read(byte canalMux) {  
->>>>>>> 9611907516e54e0bc31fcff79f61d1f16d25989a
-  digitalWrite(MUX_CANAL_0, bitRead(canalMux, 0));
-  digitalWrite(MUX_CANAL_1, bitRead(canalMux, 1));
-  digitalWrite(MUX_CANAL_2, bitRead(canalMux, 2));
-  digitalWrite(MUX_CANAL_3, bitRead(canalMux, 3));
-  return analogRead(MUX_LECTURA);
-}
-*/
-/**
- * Función de lectura del sensor indicado mapeando los máximos y mínimos del mismo
- * @param  canalMux Canal del Multiplexador correspondiente al sensor que se desea leer.
- * @param  sensor 	Índice del array de sensores correspondiente al sensor leído actualmente.
- * @return [int]    Lectura analógica del sensor indicado.
- */
-<<<<<<< HEAD
- /*
-=======
  
->>>>>>> 9611907516e54e0bc31fcff79f61d1f16d25989a
 int mux_analog_read_map(byte canalMux, int sensor) {
   digitalWrite(EMITTER_PIN, HIGH);
   int valorRaw = analogRead(canalMux); // SE MODIFICÓ LA FUNCIÓN POR SOLO ANALOGREAD
   valoresSensoresRaw[sensor] = valorRaw;
   return map(valorRaw, valoresCalibracionMinimos[sensor], valoresCalibracionMaximos[sensor], valorCalibradoMinimo, valorCalibradoMaximo);
-<<<<<<< HEAD
-}*/
-=======
-  
 }
->>>>>>> 9611907516e54e0bc31fcff79f61d1f16d25989a
 
 /**
  * Función de lectura de todos los sensores, mapeando el resultado a los valores máximos y mínimos de la calibración.
