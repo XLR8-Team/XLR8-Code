@@ -44,6 +44,7 @@
 // SENSORES //
 //////////////
 #define TIEMPO_SIN_PISTA 200
+#define EMITTER_PIN 13
 
 #ifdef MORRO_ANCHO
 #define NUMERO_SENSORES 8
@@ -112,29 +113,6 @@
 #define MOTOR_IZQUIERDO_PWM 3
 #define MOTOR_SUCCION 10
 
-//////////////
-// ENCODERS //
-//////////////
-//#define MOTOR_DERECHO_ENCODER_A PB5
-//#define MOTOR_DERECHO_ENCODER_B PB4
-//#define MOTOR_IZQUIERDO_ENCODER_A PA15
-//#define MOTOR_IZQUIERDO_ENCODER_B PB3
-
-//////////////
-// MPU9250  //
-//////////////
-//#define MPU9250_ADDRESS 0x68
-
-//#define GYRO_FULL_SCALE_250_DPS 0x00
-//#define GYRO_FULL_SCALE_500_DPS 0x08
-//#define GYRO_FULL_SCALE_1000_DPS 0x10
-//#define GYRO_FULL_SCALE_2000_DPS 0x18
-
-//#define ACC_FULL_SCALE_2_G 0x00
-//#define ACC_FULL_SCALE_4_G 0x08
-//#define ACC_FULL_SCALE_8_G 0x10
-//#define ACC_FULL_SCALE_16_G 0x18
-
 //////////
 // LEDS //
 //////////
@@ -142,24 +120,11 @@
 #define RED 8
 #define GREEN 9
 
-///////////////////////////////////
-// VARIABLES DE CONTROL DE LEDS  //
-///////////////////////////////////
-//int colorRGB[] = {255, 0, 0};
-//int colorDesc = 0;
-//int colorAsc = 1;
-//long ultimoCambioRGB = 0;
-
 /////////////
 // BOTONES //
 /////////////
-#define BTN PC13
-#define BTN_CRUCETA PA6
-
-//////////
-// MISC //
-//////////
-//#define NIVEL_BATERIA PA0
+#define BTN 2
+#define BTN_CALIBRACION 7
 
 ///////////////
 // VARIABLES //
@@ -179,9 +144,11 @@ int velocidadMaxima = 255;
 long ultimaLinea = 0;
 //long ultimaBateria = 0;
 //bool avisoBateria = false;
-int intervaloAvisoBateria = 500;
+//int intervaloAvisoBateria = 500;
 long millisInitESC = -1;
 bool ESCIniciado = false;
+
+
 
 //////////////////////////
 // VARIABLES DE CONTROL //
@@ -275,6 +242,19 @@ int velocidad_menu = 0;
 #define NUMERO_VELOCIDADES_SUCCION 9
 int velocidad_succion_menu = 0;
 */
+
+
+// TIMER
+int periodo = 1; // milisegundos de periodo del timer
+unsigned long t = 0;
+
+// ESTADOS
+#define INICIALIZADO          0
+#define CALIBRANDO_SENSORES   1
+#define PARADO                2
+#define RASTREANDO            3
+int estado = INICIALIZADO;
+
 //////////////////////////////
 // INICIALIZACION LIBRERIAS //
 //////////////////////////////
@@ -297,6 +277,10 @@ void setup() {
 }
 
 void loop() {
+
+  //AGREGAR MAQUINA DE ESTADOS!!
+
+  
   // CalibracionPID.update();
   if (!competicionIniciada) {
     btn_cruceta();
