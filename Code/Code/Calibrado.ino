@@ -34,11 +34,11 @@ void calibrado_sensores_linea() {
         } else if (lectura > valoresCalibracionMaximos[sensor]) {
           valoresCalibracionMaximos[sensor] = lectura;
         }
-        set_rainbow_color(5);
+        //Secuencia leds        
       }
     }
 
-    set_color_RGB(0, 0, 0);
+    //set_color_RGB(0, 0, 0);
 
     for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
       Serial.print("valoresCalibracionMaximos[");

@@ -2,6 +2,7 @@
  * Función para controlar nivel de carga de la LiPo durante el funcionamiento
  * @param  enLoop Indica si se ha llamado a la función desde el loop, para efectuar la comprobación con intervalo
  */
+ /*
 void nivel_bateria(bool enLoop) {
   int carga;
   byte r, g;
@@ -32,7 +33,7 @@ void nivel_bateria(bool enLoop) {
       }
       ultimaBateria = millis();
     } else {
-      if (velocidad >= 255 /* && abs(velocidadMs-velocidadMsIdeal)>0.25 */) {
+      if (velocidad >= 255 /* && abs(velocidadMs-velocidadMsIdeal)>0.25 ) {
         if (!avisoBateria) {
           set_color_RGB(0, 255, 255);
         }
@@ -75,6 +76,7 @@ void nivel_bateria(bool enLoop) {
     set_color_RGB(0, 0, 0);
   }
 }
+*/
 
 /**
  * Función para calcular a posición para cada tipo de pista.
@@ -117,7 +119,7 @@ int calcula_posicion_linea(int ultimaPosicion) {
     ultimaLinea = millis();
   } else if (millis() > (ultimaLinea + TIEMPO_SIN_PISTA)) {
     competicionIniciada = false;
-    set_color_RGB(0, 0, 0);
+    //set_color_RGB(0, 0, 0); SECUENCIA LED!!!! **********
     pausa_timer_PID();
   }
   int pos;
@@ -161,7 +163,7 @@ int calcular_PID(int posicionActual) {
 void dar_velocidad(int correccion) {
   if (velocidad > 200) {
     velocidad = 200;
-    set_color_RGB(0, 0, 255);
+    //set_color_RGB(0, 0, 255); secuencia leds!!
   }
   int velocidadIzquierda = velocidad;
   int velocidadDerecha = velocidad;
@@ -205,9 +207,10 @@ void dar_velocidad(int correccion) {
   analogWrite(MOTOR_IZQUIERDO_PWM, velocidadIzquierda);
 }
 
+/*
 /**
  * Función de interrupción para el canal A del encoder derecho
- */
+ 
 void encoder_derecho_A() {
   if (digitalRead(MOTOR_DERECHO_ENCODER_A)) {
     if (!digitalRead(MOTOR_DERECHO_ENCODER_B)) {
@@ -226,7 +229,7 @@ void encoder_derecho_A() {
 
 /**
  * Función de interrupción para el canal B del encoder derecho
- */
+ 
 void encoder_derecho_B() {
   if (digitalRead(MOTOR_DERECHO_ENCODER_B)) {
     if (!digitalRead(MOTOR_DERECHO_ENCODER_A)) {
@@ -245,7 +248,7 @@ void encoder_derecho_B() {
 
 /**
  * Función de interrupción para el canal A del encoder izquierdo
- */
+ 
 void encoder_izquierdo_A() {
   if (digitalRead(MOTOR_IZQUIERDO_ENCODER_A)) {
     if (digitalRead(MOTOR_IZQUIERDO_ENCODER_B)) {
@@ -264,7 +267,7 @@ void encoder_izquierdo_A() {
 
 /**
  * Función de interrupción para el canal B del encoder izquierdo
- */
+ 
 void encoder_izquierdo_B() {
   if (digitalRead(MOTOR_IZQUIERDO_ENCODER_B)) {
     if (digitalRead(MOTOR_IZQUIERDO_ENCODER_A)) {
@@ -284,7 +287,7 @@ void encoder_izquierdo_B() {
 /**
  * Función para calcular la velocidad del robot en m/s
  * @return Velocidad en m/s del robot, actualizada cada 20ms
- */
+ 
 float calcular_velocidad() {
   // 0.02 porque se ejecuta cada 20ms
   float velocidadLinealDerecha = ((2 * 3.1416f * (ticksDerecho - ticksDerechoAnteriores)) / (ENCODER_PPR * 0.02f)) * (float)RUEDAS_RADIO;
@@ -304,7 +307,7 @@ float calcular_velocidad() {
 /**
  * Función para calcular la velocidad del robot en PWM para asignar a los motores
  * @return Velocidad en PWM del robot, actualizada cada 20ms a partir de los m/s de consigna
- */
+ 
 int ajustar_velocidad_encoders() {
   float errorVelocidad = velocidadMsIdeal - velocidadMs;
   float p = kpVelocidad * errorVelocidad;
@@ -312,3 +315,5 @@ int ajustar_velocidad_encoders() {
   ultimoErrorVelocidad = errorVelocidad;
   return p + d;
 }
+
+*/

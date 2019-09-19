@@ -3,7 +3,7 @@
  */
 void inicia_timer_PID() {
   TimerPID.pause();
-  TimerPID.setPeriod(500);
+  TimerPID.setPeriod(500); //microsegundos
   TimerPID.setMode(TIMER_CH1, TIMER_OUTPUT_COMPARE);
   TimerPID.setCompare(TIMER_CH1, 1);
   TimerPID.attachInterrupt(1, handler_timer_PID);
@@ -47,7 +47,7 @@ void pausa_timer_PID() {
  */
 void inicia_timer_Brushless() {
   TimerBrushless.pause();
-  TimerBrushless.setPeriod(20000);
+  TimerBrushless.setPeriod(20000); //microsegundos
   TimerBrushless.setMode(TIMER_CH1, TIMER_OUTPUT_COMPARE);
   TimerBrushless.setCompare(TIMER_CH1, 1);
   TimerBrushless.attachInterrupt(1, handler_timer_Brushless);
@@ -81,11 +81,13 @@ void handler_timer_Brushless() {
     digitalWrite(MOTOR_SUCCION, HIGH);
     delayMicroseconds(map(velocidadSuccion, 0, 255, 1000, 2000));
     digitalWrite(MOTOR_SUCCION, LOW);
-
+/*
     if (competicionIniciada || velocidadSuccion > 0) {
       nivel_bateria(true);
     }
 
+ //REVISAR!!!!
+ 
     if (competicionIniciada) {
       velocidadMs = calcular_velocidad();
       if (velocidadMsIdeal > 0 || velocidadMs > 0) {
@@ -94,6 +96,6 @@ void handler_timer_Brushless() {
           velocidad = 0;
         }
       }
-    }
+    } */
   }
 }
