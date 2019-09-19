@@ -5,10 +5,12 @@
 void calibra_sensores() {
   switch (PISTA) {
   case MODO_LINEA:
+    valorSaturacionBajo = SATURACION_MINIMO_SENSORES_LINEA;
+    valorSaturacionAlto = SATURACION_MAXIMO_SENSORES_LINEA;
     valorCalibradoMaximo = CALIBRADO_MAXIMO_SENSORES_LINEA;
     valorCalibradoMinimo = CALIBRADO_MINIMO_SENSORES_LINEA;
-    posicionMaxima = (NUMERO_SENSORES + 1) * 500;
-    posicionMinima = -(NUMERO_SENSORES + 1) * 500;
+    posicionMaxima = 6500;
+    posicionMinima = -6500;
     calibrado_sensores_linea();
     calculo_umbrales_sensores();
     break;
@@ -32,8 +34,11 @@ void calibrado_sensores_linea() {
         } else if (lectura > valoresCalibracionMaximos[sensor]) {
           valoresCalibracionMaximos[sensor] = lectura;
         }
+        set_rainbow_color(5);
       }
     }
+
+    set_color_RGB(0, 0, 0);
 
     for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
       Serial.print("valoresCalibracionMaximos[");
@@ -60,6 +65,7 @@ void calibrado_sensores_linea() {
 void calculo_umbrales_sensores() {
   for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
     umbralesCalibracionSensores[sensor] = (valoresCalibracionMinimos[sensor] + valoresCalibracionMaximos[sensor]) / 2.0f;
+    umbralesCalibracionSensores[sensor] = map(umbralesCalibracionSensores[sensor], valoresCalibracionMinimos[sensor], valoresCalibracionMaximos[sensor], valorCalibradoMinimo, valorCalibradoMaximo);
 
     Serial.print("umbralesCalibracionSensores[");
     Serial.print(sensor);

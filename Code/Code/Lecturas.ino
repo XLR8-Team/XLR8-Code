@@ -28,14 +28,14 @@ int mux_analog_read_map(byte canalMux, int sensor) {
  */
 void lectura_sensores_calibrados() {
   for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
-    valoresSensores[sensor] = mux_analog_read(pinesSensores[sensor]);
-    if (valoresSensores[sensor] >= umbralesCalibracionSensores[sensor]) {
-      valoresSensores[sensor] = LECTURA_MAXIMO_SENSORES_LINEA;
-    } else if (valoresSensores[sensor] < umbralesCalibracionSensores[sensor]) {
-      valoresSensores[sensor] = LECTURA_MINIMO_SENSORES_LINEA;
+    valoresSensores[sensor] = mux_analog_read_map(pinesSensores[sensor], sensor);
+    if (valoresSensores[sensor] >= /* umbralesCalibracionSensores[sensor] */3000) {
+      valoresSensores[sensor] = valorCalibradoMaximo;
+    } else if (valoresSensores[sensor] < /* umbralesCalibracionSensores[sensor] */1000) {
+      valoresSensores[sensor] = valorCalibradoMinimo;
     }
     if (LINEA == LINEA_BLANCA) {
-      valoresSensores[sensor] = LECTURA_MAXIMO_SENSORES_LINEA - valoresSensores[sensor];
+      valoresSensores[sensor] = valorCalibradoMaximo - valoresSensores[sensor];
     }
   }
 }
