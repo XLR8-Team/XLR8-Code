@@ -30,6 +30,8 @@ void inicia_sensores() {
   pinMode(MUX_LECTURA, INPUT);
   pinMode(SENSOR_ROBOTRACER_DERECHO, INPUT);
   pinMode(SENSOR_ROBOTRACER_IZQUIERDO, INPUT);
+
+  pinMode(EMITTER_PIN, OUTPUT);
 }
 
 /**
@@ -98,4 +100,3 @@ void inicia_switch_boton() {
 void inicia_misc() {
   pinMode(NIVEL_BATERIA, INPUT);
 }
-
