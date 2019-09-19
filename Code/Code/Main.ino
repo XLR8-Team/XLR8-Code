@@ -7,6 +7,7 @@
  */
 //#include <Filter.h>
 //#include <MegunoLink.h>
+#include <TimerOne.h>
 #include <PIDfromBT.h>
 //#include <Wire.h>
 
@@ -82,15 +83,6 @@
 #define CALIBRADO_MINIMO_SENSORES_LINEA 0
 #define SATURACION_MAXIMO_SENSORES_LINEA 3000
 #define SATURACION_MINIMO_SENSORES_LINEA 1000
-
-///////////////////
-// MULTIPLEXADOR //
-///////////////////
-//#define MUX_LECTURA PB1
-//#define MUX_CANAL_0 PA12
-//#define MUX_CANAL_1 PA11
-//#define MUX_CANAL_2 PB10
-//#define MUX_CANAL_3 PB11
 
 /////////////
 // MOTORES //
@@ -220,9 +212,9 @@ int estado = INICIALIZADO;
 
 //***********************INICIALIZAR TIMER EN ARDUINO
 
-HardwareTimer TimerPID(2); //Que timer se usa el 2
+//HardwareTimer TimerPID(2); //Que timer se usa el 2
 bool timerPID_pause = false;
-HardwareTimer TimerBrushless(3);//Que timer se usa el 3
+//HardwareTimer TimerBrushless(3);//Que timer se usa el 3
 //PIDfromBT CalibracionPID(&kp, &ki, &kd, &velocidad, &posicionIdeal, &velocidadSuccion, DEBUG);
 //ExponentialFilter<long> filtroBateria(15, 0);
 

@@ -1,15 +1,18 @@
 /**
  * Función para configurar el Timer 2 para cálculo de posición y PID
  */
+ 
 void inicia_timer_PID() {
-  TimerPID.pause();
+  Timer1.initializate(500);
+  Timer1.attachInterrupt(handler_timer_PID)
+ /* TimerPID.pause();
   TimerPID.setPeriod(500); //microsegundos
   TimerPID.setMode(TIMER_CH1, TIMER_OUTPUT_COMPARE);
   TimerPID.setCompare(TIMER_CH1, 1);
   TimerPID.attachInterrupt(1, handler_timer_PID);
   timerPID_pause = false;
   TimerPID.refresh();
-  TimerPID.resume();
+  TimerPID.resume();*/
 }
 
 /**
@@ -46,13 +49,13 @@ void pausa_timer_PID() {
  * Función para configurar el Timer 3 para la creación de señal servo para el Brushless
  */
 void inicia_timer_Brushless() {
-  TimerBrushless.pause();
+/*  TimerBrushless.pause();
   TimerBrushless.setPeriod(20000); //microsegundos
   TimerBrushless.setMode(TIMER_CH1, TIMER_OUTPUT_COMPARE);
   TimerBrushless.setCompare(TIMER_CH1, 1);
   TimerBrushless.attachInterrupt(1, handler_timer_Brushless);
   TimerBrushless.refresh();
-  TimerBrushless.resume();
+  TimerBrushless.resume();*/
 }
 
 /**

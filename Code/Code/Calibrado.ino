@@ -34,12 +34,15 @@ void calibrado_sensores_linea() {
         } else if (lectura > valoresCalibracionMaximos[sensor]) {
           valoresCalibracionMaximos[sensor] = lectura;
         }
-        //Secuencia leds        
+        //Secuencia leds
+        digitalWrite(RED, HIGH);
+        digitalWrite(GREEN, HIGH);        
       }
-    }
-
+    }    
+    digitalWrite(RED, LOW);
+    digitalWrite(GREEN, HIGH);        //CALIBRACION REALIZADA
     //set_color_RGB(0, 0, 0);
-
+    /*
     for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
       Serial.print("valoresCalibracionMaximos[");
       Serial.print(sensor);
@@ -54,7 +57,7 @@ void calibrado_sensores_linea() {
       Serial.print("] = ");
       Serial.print(valoresCalibracionMinimos[sensor]);
       Serial.print(";\n");
-    }
+    }*/
   }
 }
 
@@ -66,11 +69,11 @@ void calculo_umbrales_sensores() {
   for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
     umbralesCalibracionSensores[sensor] = (valoresCalibracionMinimos[sensor] + valoresCalibracionMaximos[sensor]) / 2.0f;
     umbralesCalibracionSensores[sensor] = map(umbralesCalibracionSensores[sensor], valoresCalibracionMinimos[sensor], valoresCalibracionMaximos[sensor], valorCalibradoMinimo, valorCalibradoMaximo);
-
+    /*
     Serial.print("umbralesCalibracionSensores[");
     Serial.print(sensor);
     Serial.print("] = ");
     Serial.print(umbralesCalibracionSensores[sensor]);
-    Serial.print(";\n");
+    Serial.print(";\n");*/
   }
 }

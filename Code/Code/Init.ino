@@ -1,30 +1,24 @@
 /**
  * Función para iniciar todos los componentes del robot.
  */
-void inicia_todo() {
-  Serial.begin(9600);
-  while (!Serial) {
-  }
+void inicia_todo() {  
   inicia_sensores();
   delay(100);
   inicia_motores();
-  delay(100);
-  //inicia_encoders();
-  //delay(100);
+  delay(100);  
   inicia_leds();
   delay(100);
   inicia_switch_boton();
+  delay(100);  
+  inicia_turbina();
   delay(100);
-  //inicia_I2C();
-  //delay(100);
 }
 
 /**
  * Registra los pines del Multiplexador para los sensores
  */
  
-void inicia_sensores() {
-  
+void inicia_sensores() {  
   pinMode(SENSOR_1 , INPUT);
   pinMode(SENSOR_2 , INPUT);
   pinMode(SENSOR_3 , INPUT);
@@ -55,33 +49,6 @@ void inicia_motores() {
   digitalWrite(MOTOR_IZQUIERDO_ADELANTE, LOW);
   digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
 }
-
-/**
- * Configura las interrupciones para lectrua de los encoders
- */
- /*
-void inicia_encoders() {
-  pinMode(MOTOR_DERECHO_ENCODER_A, INPUT_PULLUP);
-  pinMode(MOTOR_DERECHO_ENCODER_B, INPUT_PULLUP);
-  pinMode(MOTOR_IZQUIERDO_ENCODER_A, INPUT_PULLUP);
-  pinMode(MOTOR_IZQUIERDO_ENCODER_B, INPUT_PULLUP);
-
-  attachInterrupt(MOTOR_DERECHO_ENCODER_A, encoder_derecho_A, CHANGE);
-  attachInterrupt(MOTOR_DERECHO_ENCODER_B, encoder_derecho_B, CHANGE);
-  attachInterrupt(MOTOR_IZQUIERDO_ENCODER_A, encoder_izquierdo_A, CHANGE);
-  attachInterrupt(MOTOR_IZQUIERDO_ENCODER_B, encoder_izquierdo_B, CHANGE);
-}
-*/
-/**
- * Inicia el protocolo I2C mediante la librería Wire.h y el MPU9250
- */
-/*
-void inicia_I2C() {
-  Wire.begin();
-  delay(100);
-  inicia_MPU9250();
-}
-*/
 /**
  * Regitra los pines de los Leds
  */
@@ -96,4 +63,12 @@ void inicia_leds() {
 void inicia_switch_boton() {
   pinMode(BTN, INPUT_PULLUP);
   pinMode(BTN_CRUCETA, INPUT_PULLUP);
+}
+/**
+ * Registra el pin PWM TURBINA
+ */
+void inicia_turbina() {
+  //pinMode(MOTOR_SUCCION, OUTPUT);
+  esc.attach(MOTOR_SUCCION);
+  esc.writeMicroseconds(1000); //Señal a mil (Está detenido) 
 }
