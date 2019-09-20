@@ -199,19 +199,19 @@ int estado = INICIALIZADO;
 
 unsigned long t_blink = 0;
 
-
+bool timerPID_pause = false;
 
 uint8_t flancoSubida(int btn) {
   uint8_t valor_nuevo = digitalRead(button[btn]);
-  uint8_t result = button_estate[btn]!=valor_nuevo && valor_nuevo == 1;
-  button_estate[btn] = valor_nuevo;
+  uint8_t result = button_state[btn]!=valor_nuevo && valor_nuevo == 1;
+  button_state[btn] = valor_nuevo;
   return result;
 }
 
 uint8_t flancoBajada(int btn) {
   uint8_t valor_nuevo = digitalRead(button[btn]);
-  uint8_t result = button_estate[btn]!=valor_nuevo && valor_nuevo == 0;
-  button_estate[btn] = valor_nuevo;
+  uint8_t result = button_state[btn]!=valor_nuevo && valor_nuevo == 0;
+  button_state[btn] = valor_nuevo;
   return result;
 }
 
@@ -225,8 +225,7 @@ void loop() {
   if(millis() - t > periodo)
   {
     t = millis();
-    leer_pulsadores();
-
+    
     switch(estado) {
       case INICIALIZADO:
         if(flancoSubida(BTN_IZQ))

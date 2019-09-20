@@ -15,8 +15,8 @@ void calibra_sensores() {
     calculo_umbrales_sensores();
     break;
   }
-  CalibracionPID.setMaxIdeal(posicionMaxima);
-  CalibracionPID.setMinIdeal(posicionMinima);
+  //CalibracionPID.setMaxIdeal(posicionMaxima);
+ // CalibracionPID.setMinIdeal(posicionMinima);
 }
 
 /**

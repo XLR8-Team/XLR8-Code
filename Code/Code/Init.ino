@@ -68,12 +68,11 @@ void inicia_switch_boton() {
   pinMode(button[BTN_IZQ], INPUT_PULLUP);
   pinMode(button[BTN_DER], INPUT_PULLUP);
 
-  // Se asume que el estado inicial es HIGH
-  button_estate[0] = LOW; //PIN START DEL MODULO
-  button_estate[1] = HIGH;
-  button_estate[2] = HIGH;
-  button_estate[3] = HIGH;
-  
+    // Se asume que el estado inicial es HIGH
+  button_state[0] = LOW; //PIN START DEL MODULO
+  button_state[1] = HIGH;
+  button_state[2] = HIGH;
+  button_state[3] = HIGH;  
 }
 /**
  * Registra el pin PWM TURBINA
