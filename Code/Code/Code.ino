@@ -89,8 +89,8 @@
 /////////////
 // BOTONES //
 /////////////
-#define BTN 2
-#define BTN_CALIBRACION 7
+#define BTN_IZQ 2
+#define BTN_DER 7
 
 ///////////////////////////////
 //       MOTOR_SUCCION       //
@@ -109,15 +109,15 @@ float posYm = 0;*/
 int velocidad = 0;
 float velocidadMsIdeal = 0;
 float velocidadMsIdealBase = 0;
-int velocidadSuccion = 0;
-int velocidadSuccionBase = 50;
+//int velocidadSuccion = 0;
+//int velocidadSuccionBase = 50;
 int velocidadMaxima = 255;
 long ultimaLinea = 0;
 //long ultimaBateria = 0;
 //bool avisoBateria = false;
 //int intervaloAvisoBateria = 500;
-long millisInitESC = -1;
-bool ESCIniciado = false;
+//long millisInitESC = -1;
+//bool ESCIniciado = false;
 
 
 
@@ -166,26 +166,28 @@ int valorCalibradoMinimo;
 ///////////////////////////////
 bool competicionIniciada = false;
 
-// TIMER
+///////////////////////////////
+//          TIMER            //
+///////////////////////////////
 int periodo = 1; // milisegundos de periodo del timer
 unsigned long t = 0;
 
-// ESTADOS
+
+///////////////////////////////
+//          ESTADOS          //
+///////////////////////////////
 #define INICIALIZADO          0
 #define CALIBRANDO_SENSORES   1
 #define PARADO                2
 #define RASTREANDO            3
 int estado = INICIALIZADO;
 
+unsigned long t_blink = 0;
+
 
 
 void setup() {
-  inicia_todo(); //Iniciar todos los compoenentes
-  
-  //Secuencia para arrancar turbina con Servo.h
-  //***esc.writeMicroseconds(1000); //Señal a mil (Está detenido) entre 1000 y 2000
-
-  calibra_sensores(); //Calibracion sensores
+  inicia_todo(); //Iniciar todos los compoenentes 
   delay(100);
 }
 
@@ -200,24 +202,21 @@ void loop() {
         if(b1 == HIGH)
         {          
           estado = CALIBRANDO_SENSORES;
-          SET_LED_G_LOW;
+          digitalWrite(GREEN, HIGH);     
         }
         break;
         
       case CALIBRANDO_SENSORES:
         if(b2 == HIGH)
-        {
-          
-          estado = PARADO;
-          led_g_blink = 1;
+        {          
+          estado = PARADO;             
         }
         break;
-
+        
       case PARADO:
         if(b1 == HIGH)
         {
           estado = RASTREANDO;
-          led_g_blink = 0;
         }
         break;
         
@@ -225,10 +224,11 @@ void loop() {
         if(b2 == HIGH)
         {
           estado = PARADO;
-            //  Inicializa los motores a estado parado
-          pausa_timer_PID();
-          //integral = 0;
-          led_g_blink = 1;
+          //  Inicializa los motores a estado parado
+          digitalWrite(MOTOR_DERECHO_ADELANTE, LOW);
+          digitalWrite(MOTOR_DERECHO_ATRAS, LOW);
+          digitalWrite(MOTOR_IZQUIERDO_ADELANTE, LOW);
+          digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
         }
         break;
     }
@@ -240,18 +240,16 @@ void loop() {
         
       case PARADO:
         if(t - t_blink < 250)
-          SET_LED_G_LOW;
+          digitalWrite(GREEN, LOW);
         else if(t - t_blink < 500)
-          SET_LED_G_HIGH;
+          digitalWrite(GREEN, HIGH);
         else
           t_blink = t;
         break;
 
       case RASTREANDO:
-        leer_sensores_linea(ADC_linea);
-        proporcional = posicion_linea(ADC_linea);
-        PID();
-        control_motores();
+        handler_timer_PID();
+        esc.writeMicroseconds(1400); //Señal a mil (Está CORRIENDO) entre 1000 y 2000
         break;
     }
   }

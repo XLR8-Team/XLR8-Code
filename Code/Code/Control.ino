@@ -39,7 +39,8 @@ int calcula_posicion_linea(int ultimaPosicion) {
     ultimaLinea = millis();
   } else if (millis() > (ultimaLinea + TIEMPO_SIN_PISTA)) {
     competicionIniciada = false;
-    //set_color_RGB(0, 0, 0); SECUENCIA LED!!!! **********
+    digitalWrite(GREEN, HIGH);
+    digitalWrite(RED, HIGH);
     pausa_timer_PID();
   }
   int pos;

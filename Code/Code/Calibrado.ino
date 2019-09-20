@@ -28,7 +28,7 @@ void calibrado_sensores_linea() {
     long tiempoInicial = millis();
     while (millis() < (tiempoInicial + TIEMPO_CALIBRADO)) {
       for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
-        int lectura = mux_analog_read(pinesSensores[sensor]);
+        int lectura = analogRead(pinesSensores[sensor]);
         if (lectura < valoresCalibracionMinimos[sensor]) {
           valoresCalibracionMinimos[sensor] = lectura;
         } else if (lectura > valoresCalibracionMaximos[sensor]) {

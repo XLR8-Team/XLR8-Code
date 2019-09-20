@@ -6,7 +6,7 @@
  
 int mux_analog_read_map(byte canalMux, int sensor) {
   digitalWrite(EMITTER_PIN, HIGH);
-  int valorRaw = analogRead(canalMux); // SE MODIFICÓ LA FUNCIÓN POR SOLO ANALOGREAD
+  int valorRaw = analogRead(canalMux); // SE MODIFICÓ LA FUNCIÓN POR SOLO ANALOGREAD... mux_analog_read En este caso leemos el pin del sensor
   valoresSensoresRaw[sensor] = valorRaw;
   return map(valorRaw, valoresCalibracionMinimos[sensor], valoresCalibracionMaximos[sensor], valorCalibradoMinimo, valorCalibradoMaximo);
 }
@@ -26,12 +26,4 @@ void lectura_sensores_calibrados() {
       valoresSensores[sensor] = valorCalibradoMaximo - valoresSensores[sensor];
     }
   }
-}
-
-/**
- * Función de lectura del botón, pasando el valor a lógica positiva.
- * @return [bool]		Indica si el botón está pulsado.
- */
-bool btn_pulsado() {
-  return digitalRead(BTN);
 }
