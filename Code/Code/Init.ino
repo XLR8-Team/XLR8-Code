@@ -61,8 +61,19 @@ void inicia_leds() {
  * Registra los pines del Switch y Botón
  */
 void inicia_switch_boton() {
-  pinMode(BTN, INPUT_PULLUP);
-  pinMode(BTN_CRUCETA, INPUT_PULLUP);
+   
+  // Configurar como PULL-UP para ahorrar resistencias
+  pinMode(button[MO_START], INPUT);
+  pinMode(button[MO_STOP], INPUT);
+  pinMode(button[BTN_IZQ], INPUT_PULLUP);
+  pinMode(button[BTN_DER], INPUT_PULLUP);
+
+  // Se asume que el estado inicial es HIGH
+  button_estate[0] = LOW; //PIN START DEL MODULO
+  button_estate[1] = HIGH;
+  button_estate[2] = HIGH;
+  button_estate[3] = HIGH;
+  
 }
 /**
  * Registra el pin PWM TURBINA

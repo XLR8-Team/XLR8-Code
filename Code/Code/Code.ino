@@ -5,7 +5,7 @@
  * Calibración del PID desde la APP android PIDfromBT
  * https://github.com/robotaleh/PIDfromBT
  */
-#include <TimerOne.h>
+//#include <TimerOne.h>
 #include <Servo.h>
 
 ////////////////////////
@@ -89,8 +89,23 @@
 /////////////
 // BOTONES //
 /////////////
+#define MO_START 0
+#define MO_STOP 1
+
 #define BTN_IZQ 2
-#define BTN_DER 7
+#define BTN_DER 3
+
+// Este arreglo contiene los pines utilizados para los botones
+uint8_t button[4] = {
+  0,
+  1,
+  2,
+  7
+};
+
+uint8_t button_state[4];
+
+
 
 ///////////////////////////////
 //       MOTOR_SUCCION       //
@@ -186,6 +201,21 @@ unsigned long t_blink = 0;
 
 
 
+uint8_t flancoSubida(int btn) {
+  uint8_t valor_nuevo = digitalRead(button[btn]);
+  uint8_t result = button_estate[btn]!=valor_nuevo && valor_nuevo == 1;
+  button_estate[btn] = valor_nuevo;
+  return result;
+}
+
+uint8_t flancoBajada(int btn) {
+  uint8_t valor_nuevo = digitalRead(button[btn]);
+  uint8_t result = button_estate[btn]!=valor_nuevo && valor_nuevo == 0;
+  button_estate[btn] = valor_nuevo;
+  return result;
+}
+
+
 void setup() {
   inicia_todo(); //Iniciar todos los compoenentes 
   delay(100);
@@ -199,7 +229,7 @@ void loop() {
 
     switch(estado) {
       case INICIALIZADO:
-        if(b1 == HIGH)
+        if(flancoSubida(BTN_IZQ))
         {          
           estado = CALIBRANDO_SENSORES;
           digitalWrite(GREEN, HIGH);     
@@ -207,21 +237,21 @@ void loop() {
         break;
         
       case CALIBRANDO_SENSORES:
-        if(b2 == HIGH)
+        if(flancoSubida(BTN_DER))
         {          
           estado = PARADO;             
         }
         break;
         
       case PARADO:
-        if(b1 == HIGH)
+        if(flancoSubida(BTN_IZQ) || flancoSubida(MO_START) )
         {
           estado = RASTREANDO;
         }
         break;
         
       case RASTREANDO:
-        if(b2 == HIGH)
+        if(flancoSubida(BTN_DER) || flancoBajada(MO_STOP) )
         {
           estado = PARADO;
           //  Inicializa los motores a estado parado
