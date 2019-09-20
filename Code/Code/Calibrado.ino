@@ -40,7 +40,7 @@ void calibrado_sensores_linea() {
       }
     }    
     digitalWrite(RED, LOW);
-    digitalWrite(GREEN, HIGH);        //CALIBRACION REALIZADA
+    digitalWrite(GREEN, LOW);        //CALIBRACION REALIZADA
     //set_color_RGB(0, 0, 0);
     /*
     for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {

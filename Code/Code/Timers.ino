@@ -4,15 +4,7 @@
  
 void inicia_timer_PID() {
   Timer1.initializate(500);
-  Timer1.attachInterrupt(handler_timer_PID)
- /* TimerPID.pause();
-  TimerPID.setPeriod(500); //microsegundos
-  TimerPID.setMode(TIMER_CH1, TIMER_OUTPUT_COMPARE);
-  TimerPID.setCompare(TIMER_CH1, 1);
-  TimerPID.attachInterrupt(1, handler_timer_PID);
-  timerPID_pause = false;
-  TimerPID.refresh();
-  TimerPID.resume();*/
+  Timer1.attachInterrupt(handler_timer_PID);
 }
 
 /**
@@ -43,62 +35,4 @@ void pausa_timer_PID() {
   velocidadSuccionBase = 0;
   velocidadSuccion = 0;
   dar_velocidad(0);
-}
-
-/**
- * Función para configurar el Timer 3 para la creación de señal servo para el Brushless
- */
-void inicia_timer_Brushless() {
-/*  TimerBrushless.pause();
-  TimerBrushless.setPeriod(20000); //microsegundos
-  TimerBrushless.setMode(TIMER_CH1, TIMER_OUTPUT_COMPARE);
-  TimerBrushless.setCompare(TIMER_CH1, 1);
-  TimerBrushless.attachInterrupt(1, handler_timer_Brushless);
-  TimerBrushless.refresh();
-  TimerBrushless.resume();*/
-}
-
-/**
- * Función a la que llama el Timer 3 ajustar la configuración via Serial-BT
- */
-void handler_timer_Brushless() {
-  if (!ESCIniciado) {
-    if (millisInitESC < 0) {
-      pinMode(MOTOR_SUCCION, OUTPUT);
-      millisInitESC = millis();
-    }
-    if (millis() < millisInitESC + 5000) {
-      pinMode(MOTOR_SUCCION, OUTPUT);
-      digitalWrite(MOTOR_SUCCION, HIGH);
-      delayMicroseconds(2000);
-      digitalWrite(MOTOR_SUCCION, LOW);
-    } else if (millis() < millisInitESC + 10000) {
-      digitalWrite(MOTOR_SUCCION, HIGH);
-      delayMicroseconds(1000);
-      digitalWrite(MOTOR_SUCCION, LOW);
-    }
-    if (millis() >= millisInitESC + 10000) {
-      ESCIniciado = true;
-    }
-  } else {
-    digitalWrite(MOTOR_SUCCION, HIGH);
-    delayMicroseconds(map(velocidadSuccion, 0, 255, 1000, 2000));
-    digitalWrite(MOTOR_SUCCION, LOW);
-/*
-    if (competicionIniciada || velocidadSuccion > 0) {
-      nivel_bateria(true);
-    }
-
- //REVISAR!!!!
- 
-    if (competicionIniciada) {
-      velocidadMs = calcular_velocidad();
-      if (velocidadMsIdeal > 0 || velocidadMs > 0) {
-        velocidad += ajustar_velocidad_encoders();
-        if (velocidadMsIdeal == 0 && velocidadMs < 0.25) {
-          velocidad = 0;
-        }
-      }
-    } */
-  }
 }

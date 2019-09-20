@@ -1,5 +1,3 @@
-
-
 //////////////////////////
 // INCLUDE de LIBRERIAS //
 //////////////////////////
@@ -182,15 +180,79 @@ int estado = INICIALIZADO;
 
 
 void setup() {
-  inicia_todo();
+  inicia_todo(); //Iniciar todos los compoenentes
+  
   //Secuencia para arrancar turbina con Servo.h
   //***esc.writeMicroseconds(1000); //Señal a mil (Está detenido) entre 1000 y 2000
 
-  calibra_sensores();
+  calibra_sensores(); //Calibracion sensores
   delay(100);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  if(millis() - t > periodo)
+  {
+    t = millis();
+    leer_pulsadores();
 
+    switch(estado) {
+      case INICIALIZADO:
+        if(b1 == HIGH)
+        {          
+          estado = CALIBRANDO_SENSORES;
+          SET_LED_G_LOW;
+        }
+        break;
+        
+      case CALIBRANDO_SENSORES:
+        if(b2 == HIGH)
+        {
+          
+          estado = PARADO;
+          led_g_blink = 1;
+        }
+        break;
+
+      case PARADO:
+        if(b1 == HIGH)
+        {
+          estado = RASTREANDO;
+          led_g_blink = 0;
+        }
+        break;
+        
+      case RASTREANDO:
+        if(b2 == HIGH)
+        {
+          estado = PARADO;
+            //  Inicializa los motores a estado parado
+          pausa_timer_PID();
+          //integral = 0;
+          led_g_blink = 1;
+        }
+        break;
+    }
+
+    switch (estado) {
+      case CALIBRANDO_SENSORES:
+        calibra_sensores(); //Calibracion sensores        
+        break;
+        
+      case PARADO:
+        if(t - t_blink < 250)
+          SET_LED_G_LOW;
+        else if(t - t_blink < 500)
+          SET_LED_G_HIGH;
+        else
+          t_blink = t;
+        break;
+
+      case RASTREANDO:
+        leer_sensores_linea(ADC_linea);
+        proporcional = posicion_linea(ADC_linea);
+        PID();
+        control_motores();
+        break;
+    }
+  }
 }
