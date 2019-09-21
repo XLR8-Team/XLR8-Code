@@ -29,6 +29,7 @@ void inicia_sensores() {
   pinMode(SENSOR_8 , INPUT);  
 
   pinMode(EMITTER_PIN, OUTPUT);
+  digitalWrite(EMITTER_PIN, HIGH);
 }
 
 
@@ -63,8 +64,8 @@ void inicia_leds() {
 void inicia_switch_boton() {
    
   // Configurar como PULL-UP para ahorrar resistencias
-  pinMode(button[MO_START], INPUT);
-  pinMode(button[MO_STOP], INPUT);
+  pinMode(button[MO_START], INPUT_PULLUP);
+  pinMode(button[MO_STOP], INPUT_PULLUP);
   pinMode(button[BTN_IZQ], INPUT_PULLUP);
   pinMode(button[BTN_DER], INPUT_PULLUP);
 

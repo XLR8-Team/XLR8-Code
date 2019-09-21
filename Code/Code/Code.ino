@@ -11,8 +11,8 @@
 ////////////////////////
 // SELECTOR DE ROBOT  //
 ////////////////////////
-// #define DRAGON_A 1
-#define DRAGON_B 1
+#define DRAGON_A 1
+//#define DRAGON_B 1
 
 #define MORRO_ANCHO 1
 
@@ -121,9 +121,9 @@ float velocidadW = 0;
 float velocidadMs = 0;
 float posXm = 0;
 float posYm = 0;*/
-int velocidad = 0;
-float velocidadMsIdeal = 0;
-float velocidadMsIdealBase = 0;
+int velocidad = 80;
+//float velocidadMsIdeal = 0;
+//float velocidadMsIdealBase = 0;
 //int velocidadSuccion = 0;
 //int velocidadSuccionBase = 50;
 int velocidadMaxima = 255;
@@ -144,7 +144,7 @@ int posicionIdeal = 0;
 int posicionIdealObjetivo;
 float errorAnterior = 0;
 float integralErrores = 0;
-float kp;
+float kp=0.05;
 float ki;
 float kd;
 float kpVelocidad = 5;
@@ -219,9 +219,11 @@ uint8_t flancoBajada(int btn) {
 void setup() {
   inicia_todo(); //Iniciar todos los compoenentes 
   delay(100);
+  
 }
 
 void loop() {
+  
   if(millis() - t > periodo)
   {
     t = millis();
@@ -231,26 +233,26 @@ void loop() {
         if(flancoSubida(BTN_IZQ))
         {          
           estado = CALIBRANDO_SENSORES;
-          digitalWrite(GREEN, HIGH);     
+         // digitalWrite(GREEN, HIGH);     
         }
         break;
         
       case CALIBRANDO_SENSORES:
         if(flancoSubida(BTN_DER))
-        {          
+        { //digitalWrite(GREEN, LOW);          
           estado = PARADO;             
         }
         break;
         
       case PARADO:
-        if(flancoSubida(BTN_IZQ) || flancoSubida(MO_START) )
+        if(flancoSubida(BTN_IZQ))//|| flancoSubida(MO_START)
         {
           estado = RASTREANDO;
         }
         break;
         
       case RASTREANDO:
-        if(flancoSubida(BTN_DER) || flancoBajada(MO_STOP) )
+        if(flancoSubida(BTN_DER)) //|| flancoBajada(MO_STOP)
         {
           estado = PARADO;
           //  Inicializa los motores a estado parado
@@ -268,6 +270,7 @@ void loop() {
         break;
         
       case PARADO:
+      
         if(t - t_blink < 250)
           digitalWrite(GREEN, LOW);
         else if(t - t_blink < 500)
@@ -277,9 +280,11 @@ void loop() {
         break;
 
       case RASTREANDO:
-        handler_timer_PID();
-        esc.writeMicroseconds(1400); //Señal a mil (Está CORRIENDO) entre 1000 y 2000
+        esc.writeMicroseconds(1200);//Señal a mil (Está CORRIENDO) entre 1000 y 2000
+        handler_timer_PID();        
+        bool competicionIniciada = true;        
         break;
     }
   }
+  
 }

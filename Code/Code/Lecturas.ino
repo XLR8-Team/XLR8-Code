@@ -4,8 +4,7 @@
  * @return [int]    Lectura analógica del sensor indicado.
  */
  
-int mux_analog_read_map(byte canalMux, int sensor) {
-  digitalWrite(EMITTER_PIN, HIGH);
+int mux_analog_read_map(byte canalMux, int sensor) {  
   int valorRaw = analogRead(canalMux); // SE MODIFICÓ LA FUNCIÓN POR SOLO ANALOGREAD... mux_analog_read En este caso leemos el pin del sensor
   valoresSensoresRaw[sensor] = valorRaw;
   return map(valorRaw, valoresCalibracionMinimos[sensor], valoresCalibracionMaximos[sensor], valorCalibradoMinimo, valorCalibradoMaximo);

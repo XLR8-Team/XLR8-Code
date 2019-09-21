@@ -14,7 +14,7 @@ void calibra_sensores() {
     calibrado_sensores_linea();
     calculo_umbrales_sensores();
     break;
-  }
+  }  
   //CalibracionPID.setMaxIdeal(posicionMaxima);
  // CalibracionPID.setMinIdeal(posicionMinima);
 }
@@ -36,11 +36,11 @@ void calibrado_sensores_linea() {
         }
         //Secuencia leds
         digitalWrite(RED, HIGH);
-        digitalWrite(GREEN, HIGH);        
+        //digitalWrite(GREEN, HIGH);        
       }
     }    
     digitalWrite(RED, LOW);
-    digitalWrite(GREEN, LOW);        //CALIBRACION REALIZADA
+    //digitalWrite(GREEN, LOW);        //CALIBRACION REALIZADA
     //set_color_RGB(0, 0, 0);
     /*
     for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
