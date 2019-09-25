@@ -126,15 +126,11 @@ long ultimaLinea = 0;
 //////////////////////////
 int posicionActual = 0;
 int posicionIdeal = 0;
-int posicionIdealObjetivo;
 float errorAnterior = 0;
 float integralErrores = 0;
 float kp=0.05;
 float ki;
 float kd;
-float kpVelocidad = 5;
-float kdVelocidad = 10;
-float ultimoErrorVelocidad = 0;
 int correccion = 0;
 
 ///////////////////////////
@@ -217,8 +213,7 @@ void loop() {
       case INICIALIZADO:
         if(flancoSubida(BTN_IZQ))
         {          
-          estado = CALIBRANDO_SENSORES;
-         // digitalWrite(GREEN, HIGH);     
+          estado = CALIBRANDO_SENSORES;     
         }
         break;
         
@@ -268,7 +263,10 @@ void loop() {
 
       case RASTREANDO:
         esc.writeMicroseconds(1200);//Señal a mil (Está CORRIENDO) entre 1000 y 2000
-        handler_timer_PID();                    
+        //Realizar el cálculo de posición y PID
+        posicionActual = calcular_posicion(posicionActual);
+        correccion = calcular_PID(posicionActual);  
+        dar_velocidad(correccion);
         break;
     }
   }
