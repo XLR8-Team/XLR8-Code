@@ -35,9 +35,8 @@ void calibrado_sensores_linea() {
           valoresCalibracionMaximos[sensor] = lectura;
         }
         //Secuencia leds
-        digitalWrite(RED, HIGH);
-        //digitalWrite(GREEN, HIGH);        
-      }
+        digitalWrite(RED, HIGH);                
+      }      
     }    
     digitalWrite(RED, LOW);
     //digitalWrite(GREEN, LOW);        //CALIBRACION REALIZADA

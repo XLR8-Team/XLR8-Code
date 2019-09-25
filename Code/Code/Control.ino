@@ -33,16 +33,6 @@ int calcula_posicion_linea(int ultimaPosicion) {
     sumaSensoresPonderados += (sensor + 1) * valoresSensores[sensor] * 1000L;
     sumaSensores += (long)valoresSensores[sensor];
   }
-/*
-  // Comprueba el tiempo sin pista y se para automáticamente para evitar daños
-  if (sensoresDetectando > 0 && sensoresDetectando < NUMERO_SENSORES) {
-    ultimaLinea = millis();
-  } else if (millis() > (ultimaLinea + TIEMPO_SIN_PISTA)) {
-    competicionIniciada = false;
-    digitalWrite(GREEN, HIGH);
-    digitalWrite(RED, HIGH);
-    pausa_timer_PID();
-  }*/
   
   int pos;
   if (sensoresDetectando > 0) {

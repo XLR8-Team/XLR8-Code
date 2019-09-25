@@ -159,8 +159,8 @@ int valorSaturacionBajo;
 int valorSaturacionAlto;
 #ifdef MORRO_ANCHO
 int pinesSensores[] = {SENSOR_1, SENSOR_2, SENSOR_3, SENSOR_4, SENSOR_5, SENSOR_6, SENSOR_7, SENSOR_8};
-int valoresSensores[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int valoresSensoresRaw[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int valoresSensores[] = {0, 0, 0, 0, 0, 0, 0, 0};
+int valoresSensoresRaw[] = {0, 0, 0, 0, 0, 0, 0, 0};
 #endif
 int posicionMaxima = 6500;
 int posicionMinima = -6500;
@@ -179,7 +179,7 @@ int valorCalibradoMinimo;
 ///////////////////////////////
 // VARIABLES DE COMPETICIÓN  //
 ///////////////////////////////
-bool competicionIniciada = false;
+bool competicionIniciada = true;
 
 ///////////////////////////////
 //          TIMER            //
@@ -239,7 +239,7 @@ void loop() {
         
       case CALIBRANDO_SENSORES:
         if(flancoSubida(BTN_DER))
-        { //digitalWrite(GREEN, LOW);          
+        {          
           estado = PARADO;             
         }
         break;
@@ -266,11 +266,13 @@ void loop() {
 
     switch (estado) {
       case CALIBRANDO_SENSORES:
-        calibra_sensores(); //Calibracion sensores        
+        if(competicionIniciada){
+          calibra_sensores(); //Calibracion sensores
+          competicionIniciada=false;
+        }                
         break;
         
-      case PARADO:
-      
+      case PARADO:      
         if(t - t_blink < 250)
           digitalWrite(GREEN, LOW);
         else if(t - t_blink < 500)
@@ -282,7 +284,7 @@ void loop() {
       case RASTREANDO:
         esc.writeMicroseconds(1200);//Señal a mil (Está CORRIENDO) entre 1000 y 2000
         handler_timer_PID();        
-        bool competicionIniciada = true;        
+        //bool competicionIniciada = true;        
         break;
     }
   }
