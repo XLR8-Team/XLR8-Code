@@ -115,24 +115,9 @@ Servo esc;
 ///////////////
 // VARIABLES //
 ///////////////
-/*float anguloGiro = 0;
-float anguloGiroR = 0;
-float velocidadW = 0;
-float velocidadMs = 0;
-float posXm = 0;
-float posYm = 0;*/
 int velocidad = 80;
-//float velocidadMsIdeal = 0;
-//float velocidadMsIdealBase = 0;
-//int velocidadSuccion = 0;
-//int velocidadSuccionBase = 50;
 int velocidadMaxima = 255;
 long ultimaLinea = 0;
-//long ultimaBateria = 0;
-//bool avisoBateria = false;
-//int intervaloAvisoBateria = 500;
-//long millisInitESC = -1;
-//bool ESCIniciado = false;
 
 
 
@@ -170,7 +155,7 @@ int posicionMinima = -6500;
 ///////////////////////////////
 #ifdef MORRO_ANCHO
 int valoresCalibracionMinimos[] = {1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023};
-int valoresCalibracionMaximos[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int valoresCalibracionMaximos[] = {0, 0, 0, 0, 0, 0, 0, 0};
 #endif
 int umbralesCalibracionSensores[NUMERO_SENSORES];
 int valorCalibradoMaximo;
@@ -283,8 +268,7 @@ void loop() {
 
       case RASTREANDO:
         esc.writeMicroseconds(1200);//Señal a mil (Está CORRIENDO) entre 1000 y 2000
-        handler_timer_PID();        
-        //bool competicionIniciada = true;        
+        handler_timer_PID();                    
         break;
     }
   }
