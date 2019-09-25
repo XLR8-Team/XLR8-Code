@@ -79,10 +79,10 @@ void dar_velocidad(int correccion) {
   }
   int velocidadIzquierda = velocidad;
   int velocidadDerecha = velocidad;
-  if (!timerPID_pause) {
-    velocidadIzquierda = velocidadIzquierda - correccion;
-    velocidadDerecha = velocidadDerecha + correccion;
-  }
+  //if (!timerPID_pause) {
+  //  velocidadIzquierda = velocidadIzquierda - correccion;
+  //  velocidadDerecha = velocidadDerecha + correccion;
+  //}
 
   int MOTOR_DERECHO_ADELANTE_STATE = HIGH;
   int MOTOR_DERECHO_ATRAS_STATE = LOW;

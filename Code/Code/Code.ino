@@ -184,7 +184,7 @@ int estado = INICIALIZADO;
 
 unsigned long t_blink = 0;
 
-bool timerPID_pause = false;
+//bool timerPID_pause = false;
 
 uint8_t flancoSubida(int btn) {
   uint8_t valor_nuevo = digitalRead(button[btn]);
