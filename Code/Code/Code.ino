@@ -7,6 +7,8 @@
  */
 //#include <TimerOne.h>
 #include <Servo.h>
+// Pololu QTR-8A analog array readout
+#include <QTRSensors.h>
 
 ////////////////////////
 // SELECTOR DE ROBOT  //
@@ -14,51 +16,22 @@
 #define DRAGON_A 1
 //#define DRAGON_B 1
 
-#define MORRO_ANCHO 1
-
-////////////
-// MODOS  //
-////////////
-#define MODO_LINEA 1
-
-#define LINEA_NEGRA 1
-#define LINEA_BLANCA 2
-
-#define LIPO_3S 2
-
 ///////////////////
 // CONFIGURACION //
 ///////////////////
-#define MILLIS_INICIO 2000
-#define PISTA MODO_LINEA
-#define LINEA LINEA_NEGRA
-#define LIPO LIPO_3S
-#define TIEMPO_CALIBRADO 2500
+
 #define CALIBRAR_SENSORES true
 
 //////////////
 // SENSORES //
 //////////////
-#define TIEMPO_SIN_PISTA 200
-#define EMITTER_PIN 13
 
-#ifdef MORRO_ANCHO
-#define NUMERO_SENSORES 8
-#define SENSOR_1 A0 /****/
-#define SENSOR_2 A1
-#define SENSOR_3 A2
-#define SENSOR_4 A3
-#define SENSOR_5 A4
-#define SENSOR_6 A5
-#define SENSOR_7 A6
-#define SENSOR_8 A7 /****/
-#endif
+QTRSensors qtr;
 
-#define CALIBRADO_MAXIMO_SENSORES_LINEA 4000
-#define CALIBRADO_MINIMO_SENSORES_LINEA 0
-#define SATURACION_MAXIMO_SENSORES_LINEA 3000
-#define SATURACION_MINIMO_SENSORES_LINEA 1000
+const uint8_t SensorCount = 8;
+uint16_t sensorValues[SensorCount];
 
+uint16_t position;
 /////////////
 // MOTORES //
 /////////////
@@ -116,46 +89,22 @@ Servo esc;
 // VARIABLES //
 ///////////////
 int velocidad = 80;
-int velocidadMaxima = 255;
-long ultimaLinea = 0;
-
-
 
 //////////////////////////
 // VARIABLES DE CONTROL //
 //////////////////////////
-int posicionActual = 0;
-int posicionIdeal = 0;
-float errorAnterior = 0;
-float integralErrores = 0;
-float kp=0.05;
-float ki;
-float kd;
+uint16_t posicionActual;
+int posicionIdeal = 3500;
+
+//variables PID
+int error_anterior = 0; // Para el PID (derivativo)
+int error_acumulado = 0; // Para el PID (integral)
+
+
+float kp=1;
+float ki=0.00001;
+float kd=0;
 int correccion = 0;
-
-///////////////////////////
-// VARIABLES DE SENSORES //
-///////////////////////////
-int valorSaturacionBajo;
-int valorSaturacionAlto;
-#ifdef MORRO_ANCHO
-int pinesSensores[] = {SENSOR_1, SENSOR_2, SENSOR_3, SENSOR_4, SENSOR_5, SENSOR_6, SENSOR_7, SENSOR_8};
-int valoresSensores[] = {0, 0, 0, 0, 0, 0, 0, 0};
-int valoresSensoresRaw[] = {0, 0, 0, 0, 0, 0, 0, 0};
-#endif
-int posicionMaxima = 6500;
-int posicionMinima = -6500;
-
-///////////////////////////////
-// VARIABLES DE CALIBRACIÓN  //
-///////////////////////////////
-#ifdef MORRO_ANCHO
-int valoresCalibracionMinimos[] = {1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023};
-int valoresCalibracionMaximos[] = {0, 0, 0, 0, 0, 0, 0, 0};
-#endif
-int umbralesCalibracionSensores[NUMERO_SENSORES];
-int valorCalibradoMaximo;
-int valorCalibradoMinimo;
 
 ///////////////////////////////
 // VARIABLES DE COMPETICIÓN  //
@@ -199,8 +148,7 @@ uint8_t flancoBajada(int btn) {
 
 void setup() {
   inicia_todo(); //Iniciar todos los compoenentes 
-  delay(100);
-  
+  delay(100);  
 }
 
 void loop() {
@@ -247,7 +195,17 @@ void loop() {
     switch (estado) {
       case CALIBRANDO_SENSORES:
         if(competicionIniciada){
-          calibra_sensores(); //Calibracion sensores
+          digitalWrite(RED, HIGH);  
+                  
+          // analogRead() takes about 0.1 ms on an AVR.
+          // 0.1 ms per sensor * 4 samples per sensor read (default) * 6 sensors
+          // * 10 reads per calibrate() call = ~24 ms per calibrate() call.
+          // Call calibrate() 400 times to make calibration take about 10 seconds.
+          for (uint16_t i = 0; i < 400; i++)
+          {
+            qtr.calibrate();
+          }
+          digitalWrite(RED, LOW);   // turn off Arduino's LED to indicate we are through with calibration
           competicionIniciada=false;
         }                
         break;
@@ -264,8 +222,8 @@ void loop() {
       case RASTREANDO:
         esc.writeMicroseconds(1200);//Señal a mil (Está CORRIENDO) entre 1000 y 2000
         //Realizar el cálculo de posición y PID
-        posicionActual = calcular_posicion(posicionActual);
-        correccion = calcular_PID(posicionActual);  
+        position = qtr.readLineWhite(sensorValues); // MODIFICACIÓN        
+        correccion = calcular_PID(position);  
         dar_velocidad(correccion);
         break;
     }

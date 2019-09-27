@@ -2,7 +2,7 @@
  * Función para calcular a posición para cada tipo de pista.
  * @param  ultimaPosicion Última posición calculada para usar en caso de pérdida de pista
  * @return [int]          Posición actual sobre la línea
- */
+ 
 int calcular_posicion(int ultimaPosicion) {
   switch (PISTA) {
   case MODO_LINEA:
@@ -16,7 +16,7 @@ int calcular_posicion(int ultimaPosicion) {
  * Función para realizar el cálculo de la posición en base a la lectura de los sensores.
  * @param  ultimaPosicion Última posición calculada para usar en caso de pérdida de línea
  * @return [int]           Posición actual sobre la línea
- */
+ 
 int calcula_posicion_linea(int ultimaPosicion) {
   lectura_sensores_calibrados();
 
@@ -45,34 +45,55 @@ int calcula_posicion_linea(int ultimaPosicion) {
 
 /**
  * Función para calcular la corrección a aplicar a los motores para mantenerse en la posición deseada de la pista.
- * @param  posicionActual Posición actual sobre la pista.
+ * @param  position Posición actual sobre la pista.
  * @return [int]          Corrección que se debe aplicar al control de la velocidad.
  */
-int calcular_PID(int posicionActual) {
-  float p = 0;
-  float i = 0;
-  float d = 0;
-  int error = 0;
-  error = posicionIdeal - posicionActual;
+ int calcular_PID(int posicionActual) {
+  
+  int error = posicionIdeal - posicionActual;
 
-  p = kp * error;
-  if (error < 100) {
-    integralErrores += error;
-    i = ki * integralErrores;
-  } else {
-    i = 0;
-    integralErrores = 0;
-  }
-  d = kd * (error - errorAnterior);
-  errorAnterior = error;
-  return p + i + d;
+  error_acumulado += error;
+  //[-1000,1000]
+  error_acumulado = min(max(-1000, error_acumulado), 1000);
+
+  float PID_proporcional = kp * error;
+  float PID_integral = ki * error_acumulado;
+  float PID_derivativo = kd * (error - error_anterior);
+
+  int correccion_pid = PID_proporcional + PID_integral + PID_derivativo;
+  error_anterior = error;
+
+   return correccion_pid;
+  
 }
+
+
+
+
 
 /**
  * Función para asignar velocidad a los motores teniendo en cuenta la corrección calculada por el PID
  * @param correccion Parámetro calculado por el PID para seguir la posición deseada en la pista
  */
-void dar_velocidad(int correccion) {
+void dar_velocidad(uint16_t correccion) {
+
+  //  Inicializa los motores a estado parado
+  digitalWrite(MOTOR_DERECHO_ADELANTE, HIGH);
+  digitalWrite(MOTOR_DERECHO_ATRAS, LOW);
+  digitalWrite(MOTOR_IZQUIERDO_ADELANTE, HIGH);
+  digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
+
+  int velocidadIzquierda = velocidad - correccion;
+  int velocidadDerecha = velocidad + correccion;
+
+  // Nunca menor que 0 ni mayor que 255
+  velocidadIzquierda = min(max(0, velocidadIzquierda), 255);
+  velocidadDerecha = min(max(0, velocidadDerecha), 255);
+  analogWrite(MOTOR_IZQUIERDO_PWM, velocidadIzquierda);
+  analogWrite(MOTOR_DERECHO_PWM, velocidadDerecha);
+ 
+  
+ /*
   if (velocidad > 200) {
     velocidad = 200;
     //set_color_RGB(0, 0, 255); secuencia leds!!
@@ -84,10 +105,13 @@ void dar_velocidad(int correccion) {
   //  velocidadDerecha = velocidadDerecha + correccion;
   //}
 
-  int MOTOR_DERECHO_ADELANTE_STATE = HIGH;
-  int MOTOR_DERECHO_ATRAS_STATE = LOW;
-  int MOTOR_IZQUIERDO_ADELANTE_STATE = HIGH;
-  int MOTOR_IZQUIERDO_ATRAS_STATE = LOW;
+  velocidadIzquierda = velocidadIzquierda - correccion;
+  velocidadDerecha = velocidadDerecha + correccion;
+  
+  int MOTOR_DERECHO_ADELANTE_STATE = LOW;
+  int MOTOR_DERECHO_ATRAS_STATE = HIGH;
+  int MOTOR_IZQUIERDO_ADELANTE_STATE = LOW;
+  int MOTOR_IZQUIERDO_ATRAS_STATE = HIGH;
 
   if (velocidadDerecha > velocidadMaxima) {
     velocidadDerecha = velocidadMaxima;
@@ -117,4 +141,6 @@ void dar_velocidad(int correccion) {
 
   analogWrite(MOTOR_DERECHO_PWM, velocidadDerecha);
   analogWrite(MOTOR_IZQUIERDO_PWM, velocidadIzquierda);
+*/
+  
 }
