@@ -85,25 +85,21 @@ uint8_t button_state[4];
 ///////////////////////////////
 Servo esc; 
 
-///////////////
-// VARIABLES //
-///////////////
-int velocidad = 80;
-
 //////////////////////////
 // VARIABLES DE CONTROL //
 //////////////////////////
-uint16_t posicionActual;
+int velocidad = 100;
+
 int posicionIdeal = 3500;
 
 //variables PID
 int error_anterior = 0; // Para el PID (derivativo)
 int error_acumulado = 0; // Para el PID (integral)
 
-
-float kp=1;
-float ki=0.00001;
-float kd=0;
+//Recomendacion bajar kp
+float kp=0.23;
+float ki=0;
+float kd=0.75;
 int correccion = 0;
 
 ///////////////////////////////
@@ -201,7 +197,7 @@ void loop() {
           // 0.1 ms per sensor * 4 samples per sensor read (default) * 6 sensors
           // * 10 reads per calibrate() call = ~24 ms per calibrate() call.
           // Call calibrate() 400 times to make calibration take about 10 seconds.
-          for (uint16_t i = 0; i < 400; i++)
+          for (uint16_t i = 0; i < 200; i++)
           {
             qtr.calibrate();
           }

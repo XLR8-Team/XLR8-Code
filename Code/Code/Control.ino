@@ -48,7 +48,7 @@ int calcula_posicion_linea(int ultimaPosicion) {
  * @param  position Posición actual sobre la pista.
  * @return [int]          Corrección que se debe aplicar al control de la velocidad.
  */
- int calcular_PID(int posicionActual) {
+ int calcular_PID(uint16_t posicionActual) {
   
   int error = posicionIdeal - posicionActual;
 
@@ -67,15 +67,11 @@ int calcula_posicion_linea(int ultimaPosicion) {
   
 }
 
-
-
-
-
 /**
  * Función para asignar velocidad a los motores teniendo en cuenta la corrección calculada por el PID
  * @param correccion Parámetro calculado por el PID para seguir la posición deseada en la pista
  */
-void dar_velocidad(uint16_t correccion) {
+void dar_velocidad(int correccion) {
 
   //  Inicializa los motores a estado parado
   digitalWrite(MOTOR_DERECHO_ADELANTE, HIGH);
