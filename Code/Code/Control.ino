@@ -1,55 +1,12 @@
-/**
- * Función para calcular a posición para cada tipo de pista.
- * @param  ultimaPosicion Última posición calculada para usar en caso de pérdida de pista
- * @return [int]          Posición actual sobre la línea
- 
-int calcular_posicion(int ultimaPosicion) {
-  switch (PISTA) {
-  case MODO_LINEA:
-    return calcula_posicion_linea(ultimaPosicion);
-    break;
-  }
-  return 0;
-}
-
-/**
- * Función para realizar el cálculo de la posición en base a la lectura de los sensores.
- * @param  ultimaPosicion Última posición calculada para usar en caso de pérdida de línea
- * @return [int]           Posición actual sobre la línea
- 
-int calcula_posicion_linea(int ultimaPosicion) {
-  lectura_sensores_calibrados();
-
-  unsigned long sumaSensoresPonderados = 0;
-  unsigned long sumaSensores = 0;
-  int sensoresDetectando = 0;
-  bool detectandoAnterior = false;
-
-  for (int sensor = 0; sensor < NUMERO_SENSORES; sensor++) {
-    if (valoresSensores[sensor] > umbralesCalibracionSensores[sensor]) {
-      sensoresDetectando++;
-    }
-    // Realiza los cálculos para la posición
-    sumaSensoresPonderados += (sensor + 1) * valoresSensores[sensor] * 1000L;
-    sumaSensores += (long)valoresSensores[sensor];
-  }
-  
-  int pos;
-  if (sensoresDetectando > 0) {
-    pos = ((sumaSensoresPonderados / sumaSensores) - (NUMERO_SENSORES + 1) * (float)(1000 / 2));
-  } else {
-    pos = (ultimaPosicion > 0) ? (1000 * (NUMERO_SENSORES + 1) / 2) : -(1000 * (NUMERO_SENSORES + 1) / 2);
-  }
-  return map(pos, -6500, 6500, -1000, 1000);
-}
 
 /**
  * Función para calcular la corrección a aplicar a los motores para mantenerse en la posición deseada de la pista.
  * @param  position Posición actual sobre la pista.
  * @return [int]          Corrección que se debe aplicar al control de la velocidad.
  */
- int calcular_PID(uint16_t posicionActual) {
-  
+ /*
+ int calcular_PID(int posicionActual) {
+ 
   int error = posicionIdeal - posicionActual;
 
   error_acumulado += error;
@@ -63,22 +20,38 @@ int calcula_posicion_linea(int ultimaPosicion) {
   int correccion_pid = PID_proporcional + PID_integral + PID_derivativo;
   error_anterior = error;
 
-   return correccion_pid;
+   return correccion_pid; 
   
+}*/
+
+int calcular_PID(int posicionActual) {
+  float p = 0;
+  float i = 0;
+  float d = 0;
+  int error = 0;
+   error = posicionIdeal - posicionActual;
+
+  p = kp * error;
+  if (error < 100) {
+    integralErrores += error;
+    i = ki * integralErrores;
+  } else {
+    i = 0;
+    integralErrores = 0;
+  }
+  d = kd * (error - errorAnterior);
+  errorAnterior = error;
+  return p + i + d;
 }
+
+
 
 /**
  * Función para asignar velocidad a los motores teniendo en cuenta la corrección calculada por el PID
  * @param correccion Parámetro calculado por el PID para seguir la posición deseada en la pista
  */
 void dar_velocidad(int correccion) {
-
-  //  Inicializa los motores a estado parado
-  digitalWrite(MOTOR_DERECHO_ADELANTE, HIGH);
-  digitalWrite(MOTOR_DERECHO_ATRAS, LOW);
-  digitalWrite(MOTOR_IZQUIERDO_ADELANTE, HIGH);
-  digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
-
+  /*
   int velocidadIzquierda = velocidad - correccion;
   int velocidadDerecha = velocidad + correccion;
 
@@ -86,57 +59,33 @@ void dar_velocidad(int correccion) {
   velocidadIzquierda = min(max(0, velocidadIzquierda), 255);
   velocidadDerecha = min(max(0, velocidadDerecha), 255);
   analogWrite(MOTOR_IZQUIERDO_PWM, velocidadIzquierda);
-  analogWrite(MOTOR_DERECHO_PWM, velocidadDerecha);
- 
-  
- /*
-  if (velocidad > 200) {
-    velocidad = 200;
-    //set_color_RGB(0, 0, 255); secuencia leds!!
-  }
-  int velocidadIzquierda = velocidad;
-  int velocidadDerecha = velocidad;
-  //if (!timerPID_pause) {
-  //  velocidadIzquierda = velocidadIzquierda - correccion;
-  //  velocidadDerecha = velocidadDerecha + correccion;
-  //}
+  analogWrite(MOTOR_DERECHO_PWM, velocidadDerecha);  */
+      int velD = velocidad - correccion;
+      int velI = velocidad + correccion;
 
-  velocidadIzquierda = velocidadIzquierda - correccion;
-  velocidadDerecha = velocidadDerecha + correccion;
-  
-  int MOTOR_DERECHO_ADELANTE_STATE = LOW;
-  int MOTOR_DERECHO_ATRAS_STATE = HIGH;
-  int MOTOR_IZQUIERDO_ADELANTE_STATE = LOW;
-  int MOTOR_IZQUIERDO_ATRAS_STATE = HIGH;
+        //limitamos desbordamientos
+       velD = constrain(velD, -255, 255);
+       velI = constrain(velI, -255, 255);
 
-  if (velocidadDerecha > velocidadMaxima) {
-    velocidadDerecha = velocidadMaxima;
-  } else if (velocidadDerecha < 0) {
-    velocidadDerecha = abs(velocidadDerecha);
-    if (velocidadDerecha > velocidadMaxima) {
-      velocidadDerecha = velocidadMaxima;
-    }
-    MOTOR_DERECHO_ADELANTE_STATE = LOW;
-    MOTOR_DERECHO_ATRAS_STATE = HIGH;
-  }
-  if (velocidadIzquierda > velocidadMaxima) {
-    velocidadIzquierda = velocidadMaxima;
-  } else if (velocidadIzquierda < 0) {
-    velocidadIzquierda = abs(velocidadIzquierda);
-    if (velocidadIzquierda > velocidadMaxima) {
-      velocidadIzquierda = velocidadMaxima;
-    }
-    MOTOR_IZQUIERDO_ADELANTE_STATE = LOW;
-    MOTOR_IZQUIERDO_ATRAS_STATE = HIGH;
-  }
+      //asiganmos valores a la rueda derecha teniendo en cuenta de que si el valor es negativo va hacia atras
+      if (velD >= 0) {
+        digitalWrite(MOTOR_DERECHO_ADELANTE, HIGH);
+        digitalWrite(MOTOR_DERECHO_ATRAS, LOW);
+        analogWrite(MOTOR_DERECHO_PWM, velD);
+      } else {
+        digitalWrite(MOTOR_DERECHO_ADELANTE, LOW);
+        digitalWrite(MOTOR_DERECHO_ATRAS, HIGH);
+        analogWrite(MOTOR_DERECHO_PWM, abs(velD));        
+      }
 
-  digitalWrite(MOTOR_DERECHO_ADELANTE, MOTOR_DERECHO_ADELANTE_STATE);
-  digitalWrite(MOTOR_DERECHO_ATRAS, MOTOR_DERECHO_ATRAS_STATE);
-  digitalWrite(MOTOR_IZQUIERDO_ADELANTE, MOTOR_IZQUIERDO_ADELANTE_STATE);
-  digitalWrite(MOTOR_IZQUIERDO_ATRAS, MOTOR_IZQUIERDO_ATRAS_STATE);
-
-  analogWrite(MOTOR_DERECHO_PWM, velocidadDerecha);
-  analogWrite(MOTOR_IZQUIERDO_PWM, velocidadIzquierda);
-*/
-  
+      //asiganmos valores a la rueda izquierda teniendo en cuenta de que si el valor es negativo va hacia atras
+      if (velI >= 0) {
+        digitalWrite(MOTOR_IZQUIERDO_ADELANTE, HIGH);
+        digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
+        analogWrite(MOTOR_IZQUIERDO_PWM, velI);
+      } else {
+        digitalWrite(MOTOR_IZQUIERDO_ADELANTE, LOW);
+        digitalWrite(MOTOR_IZQUIERDO_ATRAS, HIGH);
+        analogWrite(MOTOR_IZQUIERDO_PWM, abs(velI));        
+      }
 }

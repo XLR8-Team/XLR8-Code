@@ -5,7 +5,7 @@
  * Calibración del PID desde la APP android PIDfromBT
  * https://github.com/robotaleh/PIDfromBT
  */
-//#include <TimerOne.h>
+//#include <PIDfromBT.h>
 #include <Servo.h>
 // Pololu QTR-8A analog array readout
 #include <QTRSensors.h>
@@ -70,8 +70,8 @@ uint16_t position;
 
 // Este arreglo contiene los pines utilizados para los botones
 uint8_t button[4] = {
-  0,
-  1,
+  0, //RX
+  1, //TX 
   2,
   7
 };
@@ -88,7 +88,7 @@ Servo esc;
 //////////////////////////
 // VARIABLES DE CONTROL //
 //////////////////////////
-int velocidad = 100;
+int velocidad = 60;
 
 int posicionIdeal = 3500;
 
@@ -96,12 +96,13 @@ int posicionIdeal = 3500;
 int error_anterior = 0; // Para el PID (derivativo)
 int error_acumulado = 0; // Para el PID (integral)
 
-//Recomendacion bajar kp
-float kp=0.23;
-float ki=0;
-float kd=0.75;
-int correccion = 0;
 
+float kp=0.06;
+float ki=0;
+float kd=0.6;
+int correccion = 0;
+float integralErrores = 0;
+float errorAnterior = 0;
 ///////////////////////////////
 // VARIABLES DE COMPETICIÓN  //
 ///////////////////////////////
@@ -125,7 +126,6 @@ int estado = INICIALIZADO;
 
 unsigned long t_blink = 0;
 
-//bool timerPID_pause = false;
 
 uint8_t flancoSubida(int btn) {
   uint8_t valor_nuevo = digitalRead(button[btn]);
@@ -142,15 +142,19 @@ uint8_t flancoBajada(int btn) {
 }
 
 
+//PIDfromBT pid_calibrate(&kp, &ki, &kd, &velocidad, DEBUG);
+
 void setup() {
+ //  Serial.begin(9600);
   inicia_todo(); //Iniciar todos los compoenentes 
   delay(100);  
 }
 
 void loop() {
-  
+ //pid_calibrate.update();
   if(millis() - t > periodo)
   {
+
     t = millis();
     
     switch(estado) {
@@ -169,14 +173,19 @@ void loop() {
         break;
         
       case PARADO:
-        if(flancoSubida(BTN_IZQ))//|| flancoSubida(MO_START)
+        if( flancoSubida(BTN_IZQ) )// flancoSubida(BTN_IZQ) or digitalRead(MO_START) == HIGH 
         {
-          estado = RASTREANDO;
+          estado = RASTREANDO;          
+          //  Inicializa los motores a estado arranque
+          //digitalWrite(MOTOR_DERECHO_ADELANTE, HIGH);
+          //digitalWrite(MOTOR_DERECHO_ATRAS, LOW);
+          //digitalWrite(MOTOR_IZQUIERDO_ADELANTE, HIGH);
+          //digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
         }
         break;
         
       case RASTREANDO:
-        if(flancoSubida(BTN_DER)) //|| flancoBajada(MO_STOP)
+        if( flancoSubida(BTN_DER) ) //flancoSubida(BTN_DER) or digitalRead(MO_STOP) == LOW
         {
           estado = PARADO;
           //  Inicializa los motores a estado parado
@@ -191,17 +200,16 @@ void loop() {
     switch (estado) {
       case CALIBRANDO_SENSORES:
         if(competicionIniciada){
-          digitalWrite(RED, HIGH);  
-                  
+          digitalWrite(RED, HIGH);                 
           // analogRead() takes about 0.1 ms on an AVR.
           // 0.1 ms per sensor * 4 samples per sensor read (default) * 6 sensors
           // * 10 reads per calibrate() call = ~24 ms per calibrate() call.
           // Call calibrate() 400 times to make calibration take about 10 seconds.
-          for (uint16_t i = 0; i < 200; i++)
+          for (uint16_t i = 0; i < 100; i++)
           {
             qtr.calibrate();
           }
-          digitalWrite(RED, LOW);   // turn off Arduino's LED to indicate we are through with calibration
+          digitalWrite(RED, LOW); 
           competicionIniciada=false;
         }                
         break;
@@ -218,7 +226,7 @@ void loop() {
       case RASTREANDO:
         esc.writeMicroseconds(1200);//Señal a mil (Está CORRIENDO) entre 1000 y 2000
         //Realizar el cálculo de posición y PID
-        position = qtr.readLineWhite(sensorValues); // MODIFICACIÓN        
+        position = qtr.readLineBlack(sensorValues); // MODIFICACIÓN        
         correccion = calcular_PID(position);  
         dar_velocidad(correccion);
         break;

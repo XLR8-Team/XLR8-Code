@@ -7,7 +7,8 @@ void inicia_todo() {
   qtr.setTypeAnalog();
   qtr.setSensorPins((const uint8_t[]){A0, A1, A2, A3, A4, A5,A6,A7}, SensorCount);
   qtr.setEmitterPin(13);
-delay(100);   
+
+  delay(100);   
   inicia_motores();
   delay(100);  
   inicia_leds();
@@ -35,6 +36,7 @@ void inicia_motores() {
   digitalWrite(MOTOR_IZQUIERDO_ADELANTE, LOW);
   digitalWrite(MOTOR_IZQUIERDO_ATRAS, LOW);
 }
+
 /**
  * Regitra los pines de los Leds
  */
@@ -49,14 +51,10 @@ void inicia_leds() {
 void inicia_switch_boton() {
    
   // Configurar como PULL-UP para ahorrar resistencias
-  pinMode(button[MO_START], INPUT_PULLUP);
-  pinMode(button[MO_STOP], INPUT_PULLUP);
   pinMode(button[BTN_IZQ], INPUT_PULLUP);
   pinMode(button[BTN_DER], INPUT_PULLUP);
 
-    // Se asume que el estado inicial es HIGH
-  button_state[0] = LOW; //PIN START DEL MODULO
-  button_state[1] = HIGH;
+  // Se asume que el estado inicial es HIGH
   button_state[2] = HIGH;
   button_state[3] = HIGH;  
 }
@@ -65,5 +63,5 @@ void inicia_switch_boton() {
  */
 void inicia_turbina() {
   esc.attach(MOTOR_SUCCION);
-  esc.writeMicroseconds(1000); //Señal a mil (Está detenido) 
+  esc.writeMicroseconds(1000); //Señal a mil (Está detenido) 60 70 O 20
 }
